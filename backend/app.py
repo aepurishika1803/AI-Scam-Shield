@@ -1,6 +1,7 @@
 import os
 import re
 import io
+import asyncio
 from typing import List, Dict, Any
 
 from dotenv import load_dotenv
@@ -8,6 +9,7 @@ from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
 import pytesseract
+pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
 from hindsight_client import Hindsight
 
@@ -1382,10 +1384,10 @@ async def scan_screenshot(
                     "No text could be extracted from the screenshot."
             }
 
-        analysis = analyze_scam(
+        analysis = await asyncio.to_thread(
+            analyze_scam,
             extracted_text
         )
-
         return {
 
             "extracted_text":
