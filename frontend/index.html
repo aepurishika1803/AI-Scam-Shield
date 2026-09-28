@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AI Scam Shield</title>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f5f7fb;color:#172033}
+.container{width:min(1180px,94%);margin:auto}
+header{background:#fff;border-bottom:1px solid #e5e9f0;position:sticky;top:0;z-index:10}
+.header-inner{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:15px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-icon{width:46px;height:46px;border-radius:14px;background:#172033;color:#fff;display:flex;align-items:center;justify-content:center;font-size:23px}
+.brand h1{margin:0;font-size:21px}.brand p{margin:3px 0;color:#758096;font-size:12px}
+.online{display:flex;align-items:center;gap:7px;color:#198754;font-size:13px;font-weight:700}
+.online-dot{width:9px;height:9px;background:#20b26b;border-radius:50%}
+.lang-select{border:1px solid #dce2eb;border-radius:9px;padding:8px;background:white;font-weight:700}
+main{padding:30px 0 60px}
+.hero{margin-bottom:24px}.hero h2{margin:0 0 8px;font-size:30px}.hero p{margin:0;color:#69758a}
+.card{background:#fff;border:1px solid #e4e8ef;border-radius:18px;padding:22px;margin-bottom:20px;box-shadow:0 5px 20px #1420370a}
+.section-heading,.card-title{font-size:16px;font-weight:800;margin-bottom:14px}
+textarea{width:100%;min-height:150px;resize:vertical;border:1px solid #dce2eb;border-radius:13px;padding:15px;font-size:15px;font-family:inherit}
+textarea:focus{outline:none;border-color:#5865f2}
+.button-row,.samples{display:flex;flex-wrap:wrap;gap:9px;margin-top:13px}
+button{border:0;border-radius:10px;padding:11px 16px;font-weight:700;cursor:pointer}
+button:disabled{opacity:.6}.primary{background:#172033;color:#fff}.secondary{background:#eef2f7;color:#263247}
+.sample{background:#f2f4f8;border:1px solid #e1e5ec;color:#465269;padding:8px 11px;border-radius:999px;font-size:12px}
+.upload-box{border:2px dashed #d6dce6;border-radius:14px;padding:20px;text-align:center}
+#scanStatus{margin-top:10px;color:#69758a;font-size:13px}
+#result{display:none}
+.risk-top{display:grid;grid-template-columns:1fr 180px;gap:20px;align-items:center}
+.risk-level{font-size:30px;font-weight:900;margin-bottom:5px}
+.risk-score-text{color:#6d788b}.risk-description{margin-top:14px;color:#69758a;font-size:13px;line-height:1.6}
+.score-circle{width:150px;height:150px;border-radius:50%;border:12px solid #eef1f6;display:flex;flex-direction:column;justify-content:center;align-items:center;margin-left:auto}
+.score-circle strong{font-size:34px}.score-circle span{font-size:12px;color:#7b8494}
+.explanation{line-height:1.6;color:#566277}
+.two-column{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.tags{display:flex;flex-wrap:wrap;gap:10px}
+.tag{display:inline-flex;background:#eef2f7;padding:8px 12px;border-radius:999px;font-size:12px;color:#374258;border:1px solid #dfe4ec}
+.muted{color:#8a94a5;font-size:13px}
+.url-box{background:#f7f8fa;border-radius:12px;padding:14px;color:#596579;line-height:1.7;font-size:13px}
+.recommendation{background:#fff8e8;border:1px solid #f1dfae;border-radius:12px;padding:15px;line-height:1.6}
+.checklist{padding:0;margin:0;list-style:none}.checklist li{padding:9px 0;color:#566277}
+.safe-reply{background:#eef9f3;border:1px solid #ccebd9;border-radius:12px;padding:15px;line-height:1.6}
+.dna-row{margin-bottom:18px}.dna-header{display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px;font-weight:700}
+.dna-track{height:9px;background:#edf0f5;border-radius:99px;overflow:hidden}
+.dna-bar{height:100%;width:0;background:#172033;border-radius:99px;transition:.5s}
+.memory-status{font-weight:900;margin-bottom:12px}.memory-message{color:#687489;font-size:13px;margin-bottom:20px}
+.memory-box{background:#f7f8fa;border-radius:12px;padding:15px;margin-top:10px}
+.memory-box-title{font-size:13px;font-weight:800;margin-bottom:7px}.memory-box-text{color:#5d687b;font-size:13px;line-height:1.6}
+footer{text-align:center;color:#8993a4;font-size:12px;padding:20px}
+@media(max-width:760px){.risk-top,.two-column{grid-template-columns:1fr}.score-circle{margin:0}.hero h2{font-size:24px}}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="container header-inner">
+
+<div class="brand">
+<div class="brand-icon">🛡️</div>
+<div>
+<h1>AI Scam Shield</h1>
+<p id="brandSubtitle">Detect • Remember • Protect</p>
+</div>
+</div>
+
+<div style="display:flex;align-items:center;gap:15px">
+<select id="languageSelect" class="lang-select" onchange="changeLanguage(this.value)">
+<option value="en">English</option>
+<option value="hi">हिन्दी</option>
+<option value="te">తెలుగు</option>
+</select>
+
+<div class="online">
+<span class="online-dot"></span>
+<span id="onlineText">AI Shield Online</span>
+</div>
+</div>
+
+</div>
+</header>
+
+<main class="container">
+
+<section class="hero">
+<h2 id="heroTitle">Protect yourself from scams</h2>
+<p id="heroText">Analyze suspicious messages, links and screenshots using AI-powered scam detection and Hindsight memory.</p>
+</section>
+
+<section class="card">
+<div class="card-title" id="analyzeTitle">🔍 Analyze a Message</div>
+
+<textarea id="message" placeholder="Paste a suspicious message here..."></textarea>
+
+<div class="samples">
+<button class="sample" onclick="loadSample('english')">🇬🇧 English Scam</button>
+<button class="sample" onclick="loadSample('telugu')">🇮🇳 Telugu Scam</button>
+<button class="sample" onclick="loadSample('hindi')">🇮🇳 Hindi Scam</button>
+<button class="sample" onclick="loadSample('safe')">💬 Normal Message</button>
+</div>
+
+<div class="button-row">
+<button id="analyzeButton" class="primary" onclick="analyzeMessage()">🔎 Analyze Message</button>
+<button class="secondary" id="clearButton" onclick="clearAll()">Clear</button>
+</div>
+</section>
+
+<section class="card">
+<div class="card-title" id="screenshotTitle">📸 Screenshot Scam Scanner</div>
+<div class="upload-box">
+<input type="file" id="screenshotFile" accept="image/*">
+<br><br>
+<button id="scanButton" class="primary" onclick="scanScreenshot()">📸 Scan Screenshot</button>
+<div id="scanStatus">Upload a screenshot containing a suspicious message.</div>
+</div>
+</section>
+
+<section id="result">
+
+<section class="card">
+<div class="risk-top">
+
+<div>
+<div class="section-heading" id="threatTitle">🚨 Threat Assessment</div>
+<div id="riskLevel" class="risk-level">—</div>
+<div id="riskScoreText" class="risk-score-text">—</div>
+<div id="riskDescription" class="risk-description">
+AI-powered analysis of urgency, threats, sensitive information requests, impersonation and suspicious links.
+</div>
+</div>
+
+<div class="score-circle">
+<strong id="scoreValue">0</strong>
+<span>/ 100</span>
+</div>
+
+</div>
+</section>
+
+<section class="card">
+<div class="section-heading" id="whyTitle">🧠 Why is this risky?</div>
+<div id="explanation" class="explanation">—</div>
+</section>
+
+<div class="two-column">
+
+<section class="card">
+<div class="section-heading" id="languageTitle">🌍 Detected Language</div>
+<div id="language" class="explanation">—</div>
+</section>
+
+<section class="card">
+<div class="section-heading" id="patternsTitle">🎯 Detected Scam Patterns</div>
+<div id="patterns" class="tags">
+<span class="muted">No major scam patterns detected.</span>
+</div>
+</section>
+
+</div>
+
+<section class="card">
+<div class="section-heading" id="urlTitle">🔗 URL Intelligence</div>
+<div id="urlIntelligence" class="url-box">No URL detected.</div>
+</section>
+
+<section class="card">
+<div class="section-heading" id="recommendationTitle">⚠️ Recommendation</div>
+<div id="recommendation" class="recommendation">—</div>
+</section>
+
+<section class="card">
+<div class="section-heading" id="checklistTitle">🛡️ Victim Protection Checklist</div>
+<ul id="checklist" class="checklist"></ul>
+</section>
+
+<section class="card">
+<div class="section-heading" id="safeReplyTitle">💬 Suggested Safe Reply</div>
+<div id="safeReply" class="safe-reply">—</div>
+</section>
+
+<section class="card">
+
+<div class="section-heading" id="dnaTitle">🧬 Scam DNA</div>
+
+<div class="dna-row">
+<div class="dna-header"><span>⚡ <span id="dnaUrgencyLabel">Urgency</span></span><span id="dna-urgency">0</span></div>
+<div class="dna-track"><div id="bar-urgency" class="dna-bar"></div></div>
+</div>
+
+<div class="dna-row">
+<div class="dna-header"><span>😨 <span id="dnaThreatLabel">Fear / Threat</span></span><span id="dna-threat">0</span></div>
+<div class="dna-track"><div id="bar-threat" class="dna-bar"></div></div>
+</div>
+
+<div class="dna-row">
+<div class="dna-header"><span>🔐 <span id="dnaOtpLabel">OTP Request</span></span><span id="dna-otp">0</span></div>
+<div class="dna-track"><div id="bar-otp" class="dna-bar"></div></div>
+</div>
+
+<div class="dna-row">
+<div class="dna-header"><span>🏦 <span id="dnaBankLabel">Bank Impersonation</span></span><span id="dna-bank">0</span></div>
+<div class="dna-track"><div id="bar-bank" class="dna-bar"></div></div>
+</div>
+
+<div class="dna-row">
+<div class="dna-header"><span>🔗 <span id="dnaUrlLabel">Suspicious URL</span></span><span id="dna-suspicious_url">0</span></div>
+<div class="dna-track"><div id="bar-suspicious_url" class="dna-bar"></div></div>
+</div>
+
+</section>
+
+<section class="card">
+
+<div class="section-heading" id="memoryTitle">🧠 Hindsight Memory</div>
+
+<div id="memoryActive" class="memory-status">● MEMORY INACTIVE</div>
+
+<div id="memoryMessage" class="memory-message"></div>
+
+<div class="memory-box">
+<div id="memoryMatchTitle" class="memory-box-title">🔎 Memory Match</div>
+<div id="memoryMatch" class="memory-box-text"></div>
+</div>
+
+<div class="memory-box">
+<div id="memoryReasoningTitle" class="memory-box-title">🧠 AI Memory Reasoning</div>
+<div id="memoryReasoning" class="memory-box-text"></div>
+</div>
+
+</section>
+
+</section>
+
+</main>
+
+<footer id="footerText">
+AI Scam Shield • Detect • Remember • Protect
+</footer>
+
+
+<script>
+
+const API="http://127.0.0.1:8000";
+
+const samples={
+english:"URGENT! Your bank account is blocked. Click https://secure-bank-login.com/verify immediately and enter your OTP.",
+telugu:"మీ బ్యాంక్ ఖాతా వెంటనే ధృవీకరించండి. OTP పంపండి.",
+hindi:"आपका बैंक खाता ब्लॉक हो गया है। तुरंत सत्यापन करें और अपना ओटीपी भेजें।",
+safe:"Hi, are we still meeting tomorrow at 10 AM?"
+};
+
+
+/* =========================================================
+LANGUAGE TRANSLATIONS
+========================================================= */
+
+const translations={
+
+en:{
+subtitle:"Detect • Remember • Protect",
+online:"AI Shield Online",
+hero:"Protect yourself from scams",
+heroText:"Analyze suspicious messages, links and screenshots using AI-powered scam detection and Hindsight memory.",
+analyze:"🔍 Analyze a Message",
+placeholder:"Paste a suspicious message here...",
+english:"🇬🇧 English Scam",
+telugu:"🇮🇳 Telugu Scam",
+hindi:"🇮🇳 Hindi Scam",
+safe:"💬 Normal Message",
+analyzeBtn:"🔎 Analyze Message",
+clear:"Clear",
+screenshot:"📸 Screenshot Scam Scanner",
+scan:"📸 Scan Screenshot",
+upload:"Upload a screenshot containing a suspicious message.",
+threat:"🚨 Threat Assessment",
+riskDesc:"AI-powered analysis of urgency, threats, sensitive information requests, impersonation and suspicious links.",
+why:"🧠 Why is this risky?",
+language:"🌍 Detected Language",
+patterns:"🎯 Detected Scam Patterns",
+url:"🔗 URL Intelligence",
+recommendation:"⚠️ Recommendation",
+checklist:"🛡️ Victim Protection Checklist",
+safeReply:"💬 Suggested Safe Reply",
+dna:"🧬 Scam DNA",
+urgency:"Urgency",
+threatDna:"Fear / Threat",
+otp:"OTP Request",
+bank:"Bank Impersonation",
+suspicious:"Suspicious URL",
+memory:"🧠 Hindsight Memory",
+memoryMatch:"Memory Match",
+reasoning:"AI Memory Reasoning",
+active:"MEMORY ACTIVE",
+inactive:"MEMORY INACTIVE",
+noPatterns:"No major scam patterns detected.",
+noUrl:"No URL detected.",
+noMemory:"No similar scam cases were recalled."
+},
+
+hi:{
+subtitle:"पता लगाएँ • याद रखें • सुरक्षित रहें",
+online:"AI शील्ड ऑनलाइन",
+hero:"खुद को ऑनलाइन धोखाधड़ी से सुरक्षित रखें",
+heroText:"AI और Hindsight Memory की मदद से संदिग्ध संदेश, लिंक और स्क्रीनशॉट का विश्लेषण करें।",
+analyze:"🔍 संदेश का विश्लेषण करें",
+placeholder:"संदिग्ध संदेश यहाँ पेस्ट करें...",
+english:"🇬🇧 अंग्रेज़ी स्कैम",
+telugu:"🇮🇳 तेलुगु स्कैम",
+hindi:"🇮🇳 हिंदी स्कैम",
+safe:"💬 सामान्य संदेश",
+analyzeBtn:"🔎 संदेश का विश्लेषण करें",
+clear:"साफ़ करें",
+screenshot:"📸 स्क्रीनशॉट स्कैम स्कैनर",
+scan:"📸 स्क्रीनशॉट स्कैन करें",
+upload:"संदिग्ध संदेश वाला स्क्रीनशॉट अपलोड करें।",
+threat:"🚨 खतरे का आकलन",
+riskDesc:"AI तात्कालिकता, धमकी, संवेदनशील जानकारी, पहचान की नकल और संदिग्ध लिंक का विश्लेषण करता है।",
+why:"🧠 यह जोखिम भरा क्यों है?",
+language:"🌍 पहचानी गई भाषा",
+patterns:"🎯 पहचाने गए स्कैम पैटर्न",
+url:"🔗 URL जानकारी",
+recommendation:"⚠️ सुझाव",
+checklist:"🛡️ सुरक्षा चेकलिस्ट",
+safeReply:"💬 सुरक्षित जवाब",
+dna:"🧬 स्कैम DNA",
+urgency:"तात्कालिकता",
+threatDna:"डर / धमकी",
+otp:"OTP अनुरोध",
+bank:"बैंक की पहचान की नकल",
+suspicious:"संदिग्ध URL",
+memory:"🧠 Hindsight Memory",
+memoryMatch:"मेमोरी मिलान",
+reasoning:"AI मेमोरी रीजनिंग",
+active:"MEMORY सक्रिय",
+inactive:"MEMORY निष्क्रिय",
+noPatterns:"कोई प्रमुख स्कैम पैटर्न नहीं मिला।",
+noUrl:"कोई URL नहीं मिला।",
+noMemory:"मेमोरी में कोई समान स्कैम केस नहीं मिला।"
+},
+
+te:{
+subtitle:"గుర్తించండి • గుర్తుంచుకోండి • రక్షించండి",
+online:"AI షీల్డ్ ఆన్‌లైన్",
+hero:"స్కామ్‌ల నుండి మిమ్మల్ని మీరు రక్షించుకోండి",
+heroText:"AI మరియు Hindsight Memory ఉపయోగించి అనుమానాస్పద సందేశాలు, లింక్‌లు మరియు స్క్రీన్‌షాట్‌లను విశ్లేషించండి.",
+analyze:"🔍 సందేశాన్ని విశ్లేషించండి",
+placeholder:"అనుమానాస్పద సందేశాన్ని ఇక్కడ పేస్ట్ చేయండి...",
+english:"🇬🇧 ఇంగ్లీష్ స్కామ్",
+telugu:"🇮🇳 తెలుగు స్కామ్",
+hindi:"🇮🇳 హిందీ స్కామ్",
+safe:"💬 సాధారణ సందేశం",
+analyzeBtn:"🔎 సందేశాన్ని విశ్లేషించండి",
+clear:"క్లియర్",
+screenshot:"📸 స్క్రీన్‌షాట్ స్కామ్ స్కానర్",
+scan:"📸 స్క్రీన్‌షాట్ స్కాన్ చేయండి",
+upload:"అనుమానాస్పద సందేశం ఉన్న స్క్రీన్‌షాట్‌ను అప్‌లోడ్ చేయండి.",
+threat:"🚨 ప్రమాద అంచనా",
+riskDesc:"AI అత్యవసరం, బెదిరింపులు, సున్నితమైన సమాచారం, నకిలీ గుర్తింపు మరియు అనుమానాస్పద లింక్‌లను విశ్లేషిస్తుంది.",
+why:"🧠 ఇది ఎందుకు ప్రమాదకరం?",
+language:"🌍 గుర్తించిన భాష",
+patterns:"🎯 గుర్తించిన స్కామ్ నమూనాలు",
+url:"🔗 URL సమాచారం",
+recommendation:"⚠️ సూచన",
+checklist:"🛡️ రక్షణ చెక్‌లిస్ట్",
+safeReply:"💬 సురక్షితమైన సమాధానం",
+dna:"🧬 స్కామ్ DNA",
+urgency:"అత్యవసరం",
+threatDna:"భయం / బెదిరింపు",
+otp:"OTP అభ్యర్థన",
+bank:"బ్యాంక్ నకిలీ గుర్తింపు",
+suspicious:"అనుమానాస్పద URL",
+memory:"🧠 Hindsight Memory",
+memoryMatch:"మెమరీ మ్యాచ్",
+reasoning:"AI మెమరీ రీజనింగ్",
+active:"MEMORY యాక్టివ్",
+inactive:"MEMORY ఇన్‌యాక్టివ్",
+noPatterns:"ప్రధాన స్కామ్ నమూనాలు గుర్తించబడలేదు.",
+noUrl:"URL గుర్తించబడలేదు.",
+noMemory:"మెమరీలో ఇలాంటి స్కామ్ కేసులు లభించలేదు."
+}
+
+};
+
+let currentLanguage="en";
+
+
+function t(key){
+return translations[currentLanguage][key]||translations.en[key]||key;
+}
+
+
+/* =========================================================
+LANGUAGE SWITCH
+========================================================= */
+
+function changeLanguage(lang){
+
+currentLanguage=lang;
+
+const x=translations[lang];
+
+document.getElementById("brandSubtitle").textContent=x.subtitle;
+document.getElementById("onlineText").textContent=x.online;
+document.getElementById("heroTitle").textContent=x.hero;
+document.getElementById("heroText").textContent=x.heroText;
+document.getElementById("analyzeTitle").textContent=x.analyze;
+document.getElementById("message").placeholder=x.placeholder;
+
+document.querySelectorAll(".sample")[0].textContent=x.english;
+document.querySelectorAll(".sample")[1].textContent=x.telugu;
+document.querySelectorAll(".sample")[2].textContent=x.hindi;
+document.querySelectorAll(".sample")[3].textContent=x.safe;
+
+document.getElementById("analyzeButton").textContent=x.analyzeBtn;
+document.getElementById("clearButton").textContent=x.clear;
+document.getElementById("screenshotTitle").textContent=x.screenshot;
+document.getElementById("scanButton").textContent=x.scan;
+document.getElementById("scanStatus").textContent=x.upload;
+
+document.getElementById("threatTitle").textContent=x.threat;
+document.getElementById("riskDescription").textContent=x.riskDesc;
+document.getElementById("whyTitle").textContent=x.why;
+document.getElementById("languageTitle").textContent=x.language;
+document.getElementById("patternsTitle").textContent=x.patterns;
+document.getElementById("urlTitle").textContent=x.url;
+document.getElementById("recommendationTitle").textContent=x.recommendation;
+document.getElementById("checklistTitle").textContent=x.checklist;
+document.getElementById("safeReplyTitle").textContent=x.safeReply;
+document.getElementById("dnaTitle").textContent=x.dna;
+document.getElementById("dnaUrgencyLabel").textContent=x.urgency;
+document.getElementById("dnaThreatLabel").textContent=x.threatDna;
+document.getElementById("dnaOtpLabel").textContent=x.otp;
+document.getElementById("dnaBankLabel").textContent=x.bank;
+document.getElementById("dnaUrlLabel").textContent=x.suspicious;
+document.getElementById("memoryTitle").textContent=x.memory;
+document.getElementById("memoryMatchTitle").textContent="🔎 "+x.memoryMatch;
+document.getElementById("memoryReasoningTitle").textContent="🧠 "+x.reasoning;
+document.getElementById("footerText").textContent=x.subtitle;
+
+const patterns=document.getElementById("patterns");
+
+if(patterns.children.length===0)
+patterns.innerHTML=`<span class="muted">${x.noPatterns}</span>`;
+
+}
+
+
+/* =========================================================
+SAMPLES
+========================================================= */
+
+function loadSample(type){
+document.getElementById("message").value=samples[type]||"";
+}
+
+
+/* =========================================================
+ESCAPE
+========================================================= */
+
+function escapeHTML(value){
+
+if(value===null||value===undefined)return "";
+
+return String(value)
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+}
+
+
+/* =========================================================
+ANALYZE
+========================================================= */
+
+async function analyzeMessage(){
+
+const message=document.getElementById("message").value.trim();
+const button=document.getElementById("analyzeButton");
+
+if(!message){
+alert("Please enter a message to analyze.");
+return;
+}
+
+button.disabled=true;
+button.textContent="🔎 Analyzing...";
+
+try{
+
+const response=await fetch(`${API}/analyze`,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({message})
+});
+
+if(!response.ok)
+throw new Error("HTTP "+response.status);
+
+const data=await response.json();
+
+displayResults(data);
+
+}catch(error){
+
+console.error(error);
+alert("Could not analyze the message. Make sure FastAPI is running.");
+
+}finally{
+
+button.disabled=false;
+button.textContent=t("analyzeBtn");
+
+}
+
+}
+
+
+/* =========================================================
+DISPLAY RESULTS
+========================================================= */
+
+function displayResults(data){
+
+document.getElementById("result").style.display="block";
+
+const localized=data.localized||{};
+const score=Number(data.risk_score)||0;
+
+document.getElementById("riskLevel").textContent=
+data.risk_label||data.risk_level||"UNKNOWN";
+
+document.getElementById("riskScoreText").textContent=
+`${score}/100 Risk Score`;
+
+document.getElementById("scoreValue").textContent=score;
+
+document.getElementById("explanation").textContent=
+data.explanation||"";
+
+document.getElementById("language").textContent=
+data.language_name||data.language||"Unknown";
+
+
+/* PATTERNS */
+
+const patterns=Array.isArray(data.detected_patterns)
+?data.detected_patterns:[];
+
+const patternBox=document.getElementById("patterns");
+
+if(patterns.length){
+
+patternBox.innerHTML=patterns.map(x=>
+`<span class="tag">${escapeHTML(x)}</span>`
+).join("");
+
+}else{
+
+patternBox.innerHTML=
+`<span class="muted">${t("noPatterns")}</span>`;
+
+}
+
+
+/* URL */
+
+const urls=Array.isArray(data.urls)?data.urls:[];
+const keywords=Array.isArray(data.suspicious_url_keywords)
+?data.suspicious_url_keywords:[];
+
+let urlHTML=
+`<strong>${escapeHTML(data.url_status||t("noUrl"))}</strong>`;
+
+if(urls.length){
+
+urlHTML+="<br><br><strong>URLs:</strong><br>";
+
+urls.forEach(url=>{
+urlHTML+=`<div>${escapeHTML(url)}</div>`;
+});
+
+}
+
+if(keywords.length){
+
+urlHTML+="<br><strong>Suspicious keywords:</strong><br>";
+
+keywords.forEach(k=>{
+urlHTML+=`<span class="tag">${escapeHTML(k)}</span>`;
+});
+
+}
+
+document.getElementById("urlIntelligence").innerHTML=urlHTML;
+
+
+/* RECOMMENDATION */
+
+document.getElementById("recommendation").textContent=
+data.recommendation||"";
+
+
+/* CHECKLIST */
+
+const checklist=Array.isArray(data.protection_checklist)
+?data.protection_checklist:[];
+
+document.getElementById("checklist").innerHTML=
+checklist.map(x=>`<li>🛡️ ${escapeHTML(x)}</li>`).join("");
+
+
+/* SAFE REPLY */
+
+document.getElementById("safeReply").textContent=
+data.safe_reply||"";
+
+
+/* DNA */
+
+const dna=data.scam_dna||{};
+
+updateDNA("urgency",dna.urgency);
+updateDNA("threat",dna.threat);
+updateDNA("otp",dna.otp);
+updateDNA("bank",dna.bank);
+updateDNA("suspicious_url",dna.suspicious_url);
+
+
+/* MEMORY */
+
+const memory=data.memory||{};
+
+const active=memory.memory_status==="active";
+
+document.getElementById("memoryActive").textContent=
+active
+?"● "+(localized.memory_active||t("active"))
+:"● "+t("inactive");
+
+document.getElementById("memoryMessage").textContent=
+memory.memory_message||"";
+
+document.getElementById("memoryMatchTitle").textContent=
+"🔎 "+(localized.memory_match||t("memoryMatch"));
+
+document.getElementById("memoryMatch").textContent=
+memory.memory_match_message||
+(active
+?"Similar scam cases were recalled from Hindsight memory."
+:t("noMemory"));
+
+document.getElementById("memoryReasoningTitle").textContent=
+"🧠 "+(localized.memory_reasoning||t("reasoning"));
+
+document.getElementById("memoryReasoning").textContent=
+memory.memory_reasoning||
+"No similar scam cases were recalled from memory.";
+
+document.getElementById("result").scrollIntoView({
+behavior:"smooth",
+block:"start"
+});
+
+}
+
+
+/* =========================================================
+DNA
+========================================================= */
+
+function updateDNA(name,value){
+
+const number=Number(value)||0;
+
+const valueElement=document.getElementById(`dna-${name}`);
+const barElement=document.getElementById(`bar-${name}`);
+
+if(valueElement)valueElement.textContent=number;
+
+if(barElement){
+
+barElement.style.width=
+Math.min((number/3)*100,100)+"%";
+
+}
+
+}
+
+
+/* =========================================================
+SCREENSHOT
+========================================================= */
+
+async function scanScreenshot(){
+
+const input=document.getElementById("screenshotFile");
+const status=document.getElementById("scanStatus");
+const button=document.getElementById("scanButton");
+
+if(!input.files.length){
+
+alert("Please choose a screenshot first.");
+return;
+
+}
+
+const file=input.files[0];
+
+if(!file.type.startsWith("image/")){
+
+alert("Please select an image file.");
+return;
+
+}
+
+const formData=new FormData();
+formData.append("file",file);
+
+button.disabled=true;
+button.textContent="🔎 Scanning...";
+status.textContent="🔎 Extracting text and analyzing screenshot...";
+
+try{
+
+const response=await fetch(`${API}/scan-screenshot`,{
+method:"POST",
+body:formData
+});
+
+if(!response.ok)
+throw new Error("HTTP "+response.status);
+
+const data=await response.json();
+
+document.getElementById("message").value=
+data.extracted_text||"";
+
+document.getElementById("result").style.display="block";
+
+displayResults(data.analysis||data);
+
+status.textContent="✅ Screenshot analyzed successfully.";
+
+}catch(error){
+
+console.error(error);
+status.textContent="❌ Screenshot scan failed.";
+
+alert("Could not scan the screenshot. Make sure FastAPI and Tesseract OCR are working.");
+
+}finally{
+
+button.disabled=false;
+button.textContent=t("scan");
+
+}
+
+}
+
+
+/* =========================================================
+CLEAR
+========================================================= */
+
+function clearAll(){
+
+document.getElementById("message").value="";
+document.getElementById("result").style.display="none";
+document.getElementById("screenshotFile").value="";
+document.getElementById("scanStatus").textContent=t("upload");
+
+}
+
+
+/* =========================================================
+START
+========================================================= */
+
+async function checkBackend(){
+
+try{
+
+const response=await fetch(`${API}/health`);
+
+if(response.ok)
+console.log("AI Scam Shield backend connected.");
+
+}catch(error){
+
+console.warn("Backend not available.");
+
+}
+
+}
+
+changeLanguage("en");
+checkBackend();
+
+</script>
+
+</body>
+</html>
